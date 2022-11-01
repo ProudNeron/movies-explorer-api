@@ -15,7 +15,7 @@ const app = express();
 
 app.use(helmet());
 
-mongoose.connect(NODE_ENV === 'production' ? DATABASE_URL : 'mongodb://localhost:27017/bitfilmsdb');
+mongoose.connect(NODE_ENV === 'production' ? DATABASE_URL : 'mongodb://localhost:27017/moviesdb');
 
 app.use(cors());
 
