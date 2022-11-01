@@ -8,7 +8,7 @@ module.exports.auth = (req, res, next) => {
   const bearerToken = req.headers.authorization;
 
   if (!bearerToken || !bearerToken.startsWith('Bearer ')) {
-    throw new UnauthorizedError('некорректный токен');
+    throw new UnauthorizedError('отсутствует токен');
   }
 
   const token = extractBearerToken(bearerToken);
@@ -18,9 +18,7 @@ module.exports.auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'superSecret');
   } catch (err) {
-    const unauthorizedError = new UnauthorizedError('невалидный токен');
-    unauthorizedError.name = err.name;
-    return next(unauthorizedError);
+    throw new UnauthorizedError('невалидный токен');
   }
 
   req.user = payload;

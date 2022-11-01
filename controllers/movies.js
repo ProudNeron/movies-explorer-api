@@ -12,7 +12,7 @@ module.exports.getMoviesOfUser = (req, res, next) => {
 module.exports.postMovie = (req, res, next) => {
   const {
     country, director, duration, year, description, image, trailerLink, thumbnail,
-    movieId, nameRu, nameEn,
+    movieId, nameRU, nameEN,
   } = req.body;
   Movies.create({
     country,
@@ -25,8 +25,8 @@ module.exports.postMovie = (req, res, next) => {
     thumbnail,
     owner: req.user._id,
     movieId,
-    nameRu,
-    nameEn,
+    nameRU,
+    nameEN,
   })
     .then((movie) => res.send(movie))
     .catch((err) => {
@@ -47,7 +47,8 @@ module.exports.deleteMovie = (req, res, next) => {
         throw new AuthorizedButForbidden('Попытка удалить чужой фильм');
       }
       Movies.findByIdAndRemove(req.params.movieId)
-        .then(() => res.send({ message: 'Фильм удалён' }));
+        .then(() => res.send({ message: 'Фильм удалён' }))
+        .catch(next);
     })
     .catch((err) => {
       if (err.name === 'CastError') {

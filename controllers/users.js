@@ -36,6 +36,9 @@ module.exports.patchUserInfo = (req, res, next) => {
       if (err.name === 'ValidationError') {
         return next(new ValidationOrCastError('Невалидные данные'));
       }
+      if (err.name === 'MongoServerError' || err.code === 11000) {
+        return next(new ConflictError('Почтовый адресс уже занят'));
+      }
       return next(err);
     });
 };
@@ -47,7 +50,7 @@ module.exports.createUser = (req, res, next) => {
   Users.findOne({ email })
     .then((user) => {
       if (user) {
-        throw new ConflictError('Переданы некорректные данные при создании пользователя');
+        throw new ConflictError('Указанный почтовый адресс уже занят');
       } else {
         return bcrypt.hash(password, 10)
           .then((hash) => Users.create({

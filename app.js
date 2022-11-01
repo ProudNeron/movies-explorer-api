@@ -6,16 +6,16 @@ const cors = require('cors');
 const { errors } = require('celebrate');
 const bodyParser = require('body-parser');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const routes = require('./routes/index');
+const routes = require('./routes');
 const { handleDefaultError } = require('./middlewares/handleDefaultError');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, DATABASE_URL, NODE_ENV } = process.env;
 
 const app = express();
 
 app.use(helmet());
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
+mongoose.connect(NODE_ENV === 'production' ? DATABASE_URL : 'mongodb://localhost:27017/bitfilmsdb');
 
 app.use(cors());
 
